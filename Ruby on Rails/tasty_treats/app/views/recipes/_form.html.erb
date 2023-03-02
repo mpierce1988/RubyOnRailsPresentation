@@ -1,0 +1,68 @@
+<%= form_with(model: recipe) do |form| %>
+  <% if recipe.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+
+      <ul>
+        <% recipe.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.label :title%>
+  <%= form.text_field :title %>
+  <%= form.label :instructions %>
+  <%= form.text_field :instructions %>
+
+  <div id="ingredients">
+    <%= form.fields_for :ingredients do |ingredient_fields| %>
+      <div class="ingredient">
+        <div class="field">
+          <%= ingredient_fields.label :name %>
+          <%= ingredient_fields.text_field :name %>
+        </div>
+
+        <div class="field">
+          <%= ingredient_fields.label :quantity %>
+          <%= ingredient_fields.number_field :quantity %>
+        </div>
+        <%= link_to "Remove", "#", class: "remove_fields" %>
+      </div>
+    <% end %>
+  </div>
+
+<p><%= link_to "Add Ingredient", "#", class: "add_fields", data: { target: "#ingredients" } %></p>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
+
+<script>
+  document.addEventListener("click", function(event) {
+    var target = event.target;
+    if (target.classList.contains("add_fields")) {
+      event.preventDefault();
+
+      var targetSelector = target.getAttribute("data-target");
+      var targetNode = document.querySelector(targetSelector);
+      var firstField = targetNode.querySelector(".ingredient:first-of-type");
+      var newField = firstField.cloneNode(true);
+      var inputFields = newField.querySelectorAll("input");
+      inputFields.forEach(function(field) {
+        field.value = "";
+        field.name = field.name.replace(/\d+/, function(match) {
+          return parseInt(match) + 1;
+        });
+      });
+      targetNode.appendChild(newField);
+    } else if (target.classList.contains("remove_fields")) {
+      event.preventDefault();
+
+      var field = target.closest(".ingredient");
+      field.parentNode.removeChild(field);
+    }
+  });
+</script>
