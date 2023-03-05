@@ -1,0 +1,12 @@
+<div id="<%= dom_id plant %>">
+  <p>
+    <strong>Name:</strong>
+    <%= plant.name %>
+  </p>
+
+  <p>
+    <strong>Person:</strong>
+    <%= link_to plant.person.name, person_path(plant.person) %>
+  </p>
+
+</div>
